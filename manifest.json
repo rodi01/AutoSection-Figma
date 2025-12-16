@@ -1,0 +1,36 @@
+{
+  "name": "AutoSection",
+  "id": "1569816417064481925",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "menu": [
+    {
+      "name": "Create Section",
+      "command": "create-section"
+    },
+    {
+      "name": "Update Section",
+      "command": "update-section"
+    },
+    {
+      "name": "Refresh Section",
+      "command": "refresh-section"
+    },
+    {
+      "name": "Update All Sections",
+      "command": "update-all-sections"
+    }
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}
