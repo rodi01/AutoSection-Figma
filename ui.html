@@ -367,11 +367,270 @@
       margin-top: 4px;
       line-height: 1.4;
     }
+    
+    .preset-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .preset-dropdown-container {
+      position: relative;
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+    
+    .preset-dropdown-trigger {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      height: 24px;
+      cursor: pointer;
+      text-align: left;
+    }
+    
+    .preset-dropdown-trigger:hover {
+      background: var(--bg-secondary-hover);
+    }
+    
+    .preset-dropdown-label {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    
+    .preset-dropdown-trigger-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .preset-dropdown-caret {
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+    
+    .preset-dropdown-container.open .preset-dropdown-caret {
+      transform: rotate(180deg);
+    }
+    
+    .preset-add-btn {
+      display: flex;
+      flex: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      border-radius: 2px;
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+    
+    .preset-add-btn:hover {
+      color: var(--button-primary);
+    }
+    
+    .preset-add-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .preset-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: calc(100% - 24px);
+      background: var(--bg-input);
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .preset-dropdown-container.open .preset-dropdown-menu {
+      display: block;
+    }
+    
+    .preset-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    
+    .preset-dropdown-item:hover {
+      background: var(--bg-secondary-hover);
+    }
+    
+    .preset-dropdown-item.selected {
+      background: var(--bg-secondary);
+    }
+    
+    .preset-dropdown-item-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .preset-dropdown-item-delete {
+      visibility: hidden;
+      display: flex;
+      flex: 0;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: none;
+      border-radius: 2px;
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    
+    .preset-dropdown-item:hover .preset-dropdown-item-delete {
+      visibility: visible;
+    }
+    
+    .preset-dropdown-item-delete:hover {
+      color: var(--error-color);
+    }
+    
+    .preset-dropdown-item-delete svg {
+      width: 12px;
+      height: 12px;
+    }
+    
+    .preset-dropdown-divider {
+      height: 1px;
+      background: var(--input-border);
+      margin: 4px 0;
+    }
+    
+    .preset-dropdown-action {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-secondary);
+      cursor: pointer;
+      gap: 6px;
+    }
+    
+    .preset-dropdown-action:hover {
+      background: var(--bg-secondary-hover);
+      color: var(--text-primary);
+    }
+    
+    .preset-dropdown-action svg {
+      width: 12px;
+      height: 12px;
+    }
+    
+    .preset-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .preset-modal.show {
+      display: flex;
+    }
+    
+    .preset-modal-content {
+      background: var(--bg-primary);
+      padding: 16px;
+      border-radius: 8px;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .preset-modal-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    
+    .preset-modal-input {
+      padding: 6px 8px;
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-input);
+      color: var(--text-primary);
+    }
+    
+    .preset-modal-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+    
+    .preset-modal-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
   </style>
 </head>
 <body>
   <div class="container">
     <h2 class="title" id="title">Create Section</h2>
+    
+    <div class="preset-section">
+      <div class="preset-dropdown-container" id="preset-dropdown-container">
+        <button type="button" class="preset-dropdown-trigger" id="preset-dropdown-trigger">
+          <span class="preset-dropdown-label">Preset:</span>
+          <span class="preset-dropdown-trigger-text" id="preset-dropdown-text">Default</span>
+          <svg class="preset-dropdown-caret" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+          </svg>
+        </button>
+        <button type="button" class="preset-add-btn" id="preset-add-btn" title="Save current as preset">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="preset-dropdown-menu" id="preset-dropdown-menu">
+          <!-- Items will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
     
     <div class="section">
       <div class="label">Layout Direction</div>
@@ -432,6 +691,18 @@
     
     <div class="error" id="error-message"></div>
     
+    <!-- Preset Save Modal -->
+    <div class="preset-modal" id="preset-modal">
+      <div class="preset-modal-content">
+        <h3 class="preset-modal-title">Save Preset</h3>
+        <input type="text" id="preset-name-input" class="preset-modal-input" placeholder="Preset name" maxlength="50">
+        <div class="preset-modal-buttons">
+          <button type="button" class="button-secondary preset-button" id="preset-modal-cancel">Cancel</button>
+          <button type="button" class="button-primary preset-button" id="preset-modal-save">Save</button>
+        </div>
+      </div>
+    </div>
+    
     <div class="button-group">
       <button class="button-secondary" id="cancel-btn">Cancel</button>
       <button class="button-primary" id="apply-btn">Apply</button>
@@ -449,10 +720,21 @@
     const applyBtn = document.getElementById('apply-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const errorMessage = document.getElementById('error-message');
+    const presetDropdownContainer = document.getElementById('preset-dropdown-container');
+    const presetDropdownTrigger = document.getElementById('preset-dropdown-trigger');
+    const presetDropdownText = document.getElementById('preset-dropdown-text');
+    const presetDropdownMenu = document.getElementById('preset-dropdown-menu');
+    const presetAddBtn = document.getElementById('preset-add-btn');
+    const presetModal = document.getElementById('preset-modal');
+    const presetNameInput = document.getElementById('preset-name-input');
+    const presetModalSave = document.getElementById('preset-modal-save');
+    const presetModalCancel = document.getElementById('preset-modal-cancel');
 
     let mode = 'create';
     let selectedLayout = 'horizontal'; // Default to horizontal
     let selectedAlignment = 'top'; // Default alignment
+    let presets = [];
+    let selectedPresetId = 'default';
 
     const alignmentSection = document.getElementById('alignment-section');
     const alignmentLabel = document.getElementById('alignment-label');
@@ -682,9 +964,380 @@
       }, '*');
     });
 
-    // Listen for messages from plugin
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add('show');
+    }
+
+    function hideError() {
+      errorMessage.classList.remove('show');
+    }
+    
+    // Default preset values
+    const defaultPreset = {
+      id: 'default',
+      name: 'Default',
+      padding: { top: 80, right: 80, bottom: 80, left: 80 },
+      spacing: 0,
+      layout: 'horizontal',
+      alignment: 'top'
+    };
+    
+    // Preset management functions
+    function updatePresetDropdown() {
+      presetDropdownMenu.innerHTML = '';
+      
+      // Add Default preset (non-deletable)
+      const defaultItem = createPresetItem(defaultPreset, false);
+      presetDropdownMenu.appendChild(defaultItem);
+      
+      // Add saved presets
+      presets.forEach(preset => {
+        const item = createPresetItem(preset, true);
+        presetDropdownMenu.appendChild(item);
+      });
+      
+      // Add divider
+      const divider = document.createElement('div');
+      divider.className = 'preset-dropdown-divider';
+      presetDropdownMenu.appendChild(divider);
+      
+      // Add "Update Preset" action (only if a non-default preset is selected)
+      if (selectedPresetId && selectedPresetId !== 'default') {
+        const selectedPreset = presets.find(p => p.id === selectedPresetId);
+        if (selectedPreset) {
+          const updateAction = document.createElement('div');
+          updateAction.className = 'preset-dropdown-action';
+          updateAction.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Update "${selectedPreset.name}"</span>
+          `;
+          updateAction.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closePresetDropdown();
+            updateCurrentPreset();
+          });
+          presetDropdownMenu.appendChild(updateAction);
+        }
+      }
+      
+      // Add "Save Current As Preset..." action
+      const saveAction = document.createElement('div');
+      saveAction.className = 'preset-dropdown-action';
+      saveAction.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Save As New Preset...</span>
+      `;
+      saveAction.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closePresetDropdown();
+        openSavePresetModal();
+      });
+      presetDropdownMenu.appendChild(saveAction);
+      
+      // Update trigger text
+      updatePresetTriggerText();
+    }
+    
+    function createPresetItem(preset, deletable) {
+      const item = document.createElement('div');
+      item.className = 'preset-dropdown-item';
+      if (preset.id === selectedPresetId) {
+        item.classList.add('selected');
+      }
+      item.dataset.presetId = preset.id;
+      
+      const text = document.createElement('span');
+      text.className = 'preset-dropdown-item-text';
+      text.textContent = preset.name;
+      item.appendChild(text);
+      
+      if (deletable) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'preset-dropdown-item-delete';
+        deleteBtn.setAttribute('aria-label', `Remove preset ${preset.name}`);
+        deleteBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `;
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deletePresetById(preset.id);
+        });
+        item.appendChild(deleteBtn);
+      }
+      
+      item.addEventListener('click', () => {
+        selectPreset(preset.id);
+        closePresetDropdown();
+      });
+      
+      return item;
+    }
+    
+    function updatePresetTriggerText() {
+      if (selectedPresetId === 'default' || !selectedPresetId) {
+        presetDropdownText.textContent = 'Default';
+      } else {
+        const preset = presets.find(p => p.id === selectedPresetId);
+        presetDropdownText.textContent = preset ? preset.name : 'Default';
+      }
+    }
+    
+    function openPresetDropdown() {
+      presetDropdownContainer.classList.add('open');
+    }
+    
+    function closePresetDropdown() {
+      presetDropdownContainer.classList.remove('open');
+    }
+    
+    function togglePresetDropdown() {
+      if (presetDropdownContainer.classList.contains('open')) {
+        closePresetDropdown();
+      } else {
+        openPresetDropdown();
+      }
+    }
+    
+    function selectPreset(presetId) {
+      selectedPresetId = presetId;
+      
+      let preset;
+      if (presetId === 'default') {
+        preset = defaultPreset;
+      } else {
+        preset = presets.find(p => p.id === presetId);
+      }
+      
+      if (preset) {
+        loadPreset(preset);
+      }
+      
+      updatePresetDropdown();
+    }
+    
+    function deletePresetById(presetId) {
+      parent.postMessage({
+        pluginMessage: {
+          type: 'delete-preset',
+          presetId: presetId
+        }
+      }, '*');
+    }
+    
+    function openSavePresetModal() {
+      presetNameInput.value = '';
+      presetModal.classList.add('show');
+      presetNameInput.focus();
+    }
+    
+    function updateCurrentPreset() {
+      if (!selectedPresetId || selectedPresetId === 'default') return;
+      
+      const settings = getCurrentSettings();
+      
+      parent.postMessage({
+        pluginMessage: {
+          type: 'update-preset',
+          presetId: selectedPresetId,
+          padding: settings.padding,
+          spacing: settings.spacing,
+          layout: settings.layout,
+          alignment: settings.alignment
+        }
+      }, '*');
+    }
+    
+    function loadPreset(preset) {
+      if (!preset) return;
+      
+      // Set padding
+      const padding = preset.padding;
+      if (padding.top === padding.bottom && padding.left === padding.right) {
+        if (padding.top === padding.left) {
+          paddingHorizontal.value = Math.round(padding.left).toString();
+          paddingVertical.value = Math.round(padding.top).toString();
+        } else {
+          paddingHorizontal.value = Math.round(padding.left).toString();
+          paddingVertical.value = Math.round(padding.top).toString();
+        }
+      } else {
+        paddingHorizontal.value = `${Math.round(padding.left)}, ${Math.round(padding.right)}`;
+        paddingVertical.value = `${Math.round(padding.top)}, ${Math.round(padding.bottom)}`;
+      }
+      
+      // Set spacing
+      frameSpacing.value = Math.round(preset.spacing).toString();
+      
+      // Set layout
+      selectedLayout = preset.layout;
+      directionToggles.forEach(toggle => {
+        toggle.classList.remove('active');
+        if (toggle.dataset.layout === selectedLayout) {
+          toggle.classList.add('active');
+        }
+      });
+      
+      // Set alignment
+      if (selectedLayout === 'horizontal' || selectedLayout === 'vertical') {
+        alignmentSection.style.display = 'block';
+        selectedAlignment = preset.alignment;
+        createAlignmentOptions(selectedLayout);
+        const alignmentButton = document.getElementById(`alignment-${selectedAlignment === 'center' ? 'middle' : selectedAlignment}`);
+        if (alignmentButton) {
+          alignmentGroups.querySelectorAll('.alignment-button').forEach(btn => btn.classList.remove('active'));
+          alignmentButton.classList.add('active');
+        }
+      } else {
+        alignmentSection.style.display = 'none';
+      }
+    }
+    
+    function getCurrentSettings() {
+      const padding = parsePadding();
+      const spacing = parseFloat(frameSpacing.value) || 0;
+      const layout = selectedLayout;
+      const alignment = selectedLayout === 'maintain' ? 'top' : selectedAlignment;
+      
+      return { padding, spacing, layout, alignment };
+    }
+    
+    // Preset dropdown trigger handler
+    presetDropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      togglePresetDropdown();
+    });
+    
+    // Preset add button handler
+    presetAddBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openSavePresetModal();
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!presetDropdownContainer.contains(e.target)) {
+        closePresetDropdown();
+      }
+    });
+    
+    // Preset modal handlers
+    presetModalCancel.addEventListener('click', () => {
+      presetModal.classList.remove('show');
+    });
+    
+    presetModalSave.addEventListener('click', () => {
+      const name = presetNameInput.value.trim();
+      if (!name) {
+        showError('Please enter a preset name');
+        return;
+      }
+      
+      // Check for duplicate names (case-insensitive)
+      const duplicateName = presets.some(p => p.name.toLowerCase() === name.toLowerCase());
+      if (duplicateName) {
+        showError('A preset with this name already exists');
+        return;
+      }
+      
+      const settings = getCurrentSettings();
+      
+      parent.postMessage({
+        pluginMessage: {
+          type: 'save-preset',
+          name: name,
+          padding: settings.padding,
+          spacing: settings.spacing,
+          layout: settings.layout,
+          alignment: settings.alignment
+        }
+      }, '*');
+      
+      presetModal.classList.remove('show');
+    });
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (presetModal.classList.contains('show')) {
+          presetModal.classList.remove('show');
+        }
+        closePresetDropdown();
+      }
+    });
+    
+    // Handle preset name input enter key
+    presetNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        presetModalSave.click();
+      }
+    });
+    
+    // Request presets list on load
+    parent.postMessage({
+      pluginMessage: {
+        type: 'list-presets'
+      }
+    }, '*');
+    
+    // Initialize with default preset selected
+    selectedPresetId = 'default';
+    
+    // Handle messages from plugin
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
+      
+      if (msg.type === 'presets-list') {
+        presets = msg.presets || [];
+        updatePresetDropdown();
+        return;
+      }
+      
+      if (msg.type === 'preset-saved') {
+        presets.push(msg.preset);
+        selectedPresetId = msg.preset.id;
+        updatePresetDropdown();
+        return;
+      }
+      
+      if (msg.type === 'preset-loaded') {
+        loadPreset(msg.preset);
+        return;
+      }
+      
+      if (msg.type === 'preset-deleted') {
+        presets = presets.filter(p => p.id !== msg.presetId);
+        if (selectedPresetId === msg.presetId) {
+          selectedPresetId = 'default';
+          loadPreset(defaultPreset);
+        }
+        updatePresetDropdown();
+        return;
+      }
+      
+      if (msg.type === 'preset-updated') {
+        const index = presets.findIndex(p => p.id === msg.preset.id);
+        if (index >= 0) {
+          presets[index] = msg.preset;
+        }
+        updatePresetDropdown();
+        return;
+      }
+      
+      if (msg.type === 'preset-error') {
+        showError(msg.error || 'Preset operation failed');
+        return;
+      }
+      
       if (msg.type === 'init') {
         mode = msg.mode;
         titleEl.textContent = mode === 'create' ? 'Create Section' : 'Update Section';
@@ -763,17 +1416,15 @@
             alignmentButton.classList.add('active');
           }
         }
+        
+        // Request presets list after init
+        parent.postMessage({
+          pluginMessage: {
+            type: 'list-presets'
+          }
+        }, '*');
       }
     };
-
-    function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.classList.add('show');
-    }
-
-    function hideError() {
-      errorMessage.classList.remove('show');
-    }
   </script>
 </body>
 </html>

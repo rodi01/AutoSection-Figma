@@ -8,6 +8,15 @@ interface Padding {
   left: number;
 }
 
+interface Preset {
+  id: string;
+  name: string;
+  padding: Padding;
+  spacing: number;
+  layout: 'horizontal' | 'vertical' | 'maintain';
+  alignment: 'top' | 'center' | 'bottom' | 'left' | 'right';
+}
+
 interface ApplyMessage {
   type: 'apply';
   mode: 'create' | 'update';
@@ -21,10 +30,95 @@ interface CancelMessage {
   type: 'cancel';
 }
 
-type PluginMessage = ApplyMessage | CancelMessage;
+interface SavePresetMessage {
+  type: 'save-preset';
+  name: string;
+  padding: Padding;
+  spacing: number;
+  layout: 'horizontal' | 'vertical' | 'maintain';
+  alignment: 'top' | 'center' | 'bottom' | 'left' | 'right';
+}
+
+interface LoadPresetMessage {
+  type: 'load-preset';
+  presetId: string;
+}
+
+interface DeletePresetMessage {
+  type: 'delete-preset';
+  presetId: string;
+}
+
+interface UpdatePresetMessage {
+  type: 'update-preset';
+  presetId: string;
+  padding: Padding;
+  spacing: number;
+  layout: 'horizontal' | 'vertical' | 'maintain';
+  alignment: 'top' | 'center' | 'bottom' | 'left' | 'right';
+}
+
+interface ListPresetsMessage {
+  type: 'list-presets';
+}
+
+type PluginMessage = ApplyMessage | CancelMessage | SavePresetMessage | LoadPresetMessage | DeletePresetMessage | ListPresetsMessage | UpdatePresetMessage;
 
 // Store original selection to restore after operations
 let originalSelectionToRestore: SceneNode[] | null = null;
+
+// Preset storage key
+const PRESETS_STORAGE_KEY = 'autosection-presets';
+
+// Preset management functions
+async function getPresets(): Promise<Preset[]> {
+  try {
+    const stored = await figma.clientStorage.getAsync(PRESETS_STORAGE_KEY);
+    return stored || [];
+  } catch (e) {
+    console.warn('Error loading presets:', e);
+    return [];
+  }
+}
+
+async function savePreset(preset: Preset): Promise<void> {
+  try {
+    const presets = await getPresets();
+    const existingIndex = presets.findIndex(p => p.id === preset.id);
+    
+    if (existingIndex >= 0) {
+      presets[existingIndex] = preset;
+    } else {
+      presets.push(preset);
+    }
+    
+    await figma.clientStorage.setAsync(PRESETS_STORAGE_KEY, presets);
+  } catch (e) {
+    console.warn('Error saving preset:', e);
+    throw e;
+  }
+}
+
+async function deletePreset(presetId: string): Promise<void> {
+  try {
+    const presets = await getPresets();
+    const filtered = presets.filter(p => p.id !== presetId);
+    await figma.clientStorage.setAsync(PRESETS_STORAGE_KEY, filtered);
+  } catch (e) {
+    console.warn('Error deleting preset:', e);
+    throw e;
+  }
+}
+
+async function getPreset(presetId: string): Promise<Preset | null> {
+  try {
+    const presets = await getPresets();
+    return presets.find(p => p.id === presetId) || null;
+  } catch (e) {
+    console.warn('Error getting preset:', e);
+    return null;
+  }
+}
 
 // Helper type for nodes that have position and size properties
 type PositionedNode = SceneNode & {
@@ -47,10 +141,10 @@ function hasPositionAndSize(node: SceneNode): node is PositionedNode {
 // Handle plugin commands
 figma.on('run', ({ command }) => {
   if (command === 'create-section') {
-    figma.showUI(__html__, { width: 300, height: 480 });
+    figma.showUI(__html__, { width: 300, height: 520 });
     handleCreateSection();
   } else if (command === 'update-section') {
-    figma.showUI(__html__, { width: 300, height: 480 });
+    figma.showUI(__html__, { width: 300, height: 520 });
     handleUpdateSection();
   } else if (command === 'refresh-section') {
     // Don't show UI for refresh - update directly
@@ -126,11 +220,8 @@ function detectSpacing(frames: PositionedNode[]): number | null {
   // Combine all spacings
   const allSpacings = [...horizontalSpacings, ...verticalSpacings];
   if (allSpacings.length === 0) {
-    console.log('detectSpacing - No spacings found');
     return null;
   }
-  
-  console.log('detectSpacing - All spacings:', allSpacings);
   
   // Check if all spacings are approximately the same (within 2px tolerance for better detection)
   const firstSpacing = allSpacings[0];
@@ -139,7 +230,6 @@ function detectSpacing(frames: PositionedNode[]): number | null {
   
   // Return the spacing if all are the same (including 0)
   if (isEven && firstSpacing >= 0) {
-    console.log('detectSpacing - All spacings are even, returning:', firstSpacing);
     return Math.round(firstSpacing);
   }
   
@@ -187,11 +277,9 @@ function detectSpacing(frames: PositionedNode[]): number | null {
         }
       }
       if (bestNonZeroSpacing !== null) {
-        console.log('detectSpacing - Most common non-zero spacing found:', bestNonZeroSpacing, 'appears', bestNonZeroCount, 'times out of', allSpacings.length);
         return bestNonZeroSpacing;
       }
     }
-    console.log('detectSpacing - Most common spacing found:', mostCommonSpacing, 'appears', maxCount, 'times out of', allSpacings.length);
     return mostCommonSpacing;
   }
   
@@ -211,12 +299,10 @@ function detectSpacing(frames: PositionedNode[]): number | null {
       }
     }
     if (bestNonZeroSpacing !== null) {
-      console.log('detectSpacing - Best non-zero spacing found:', bestNonZeroSpacing, 'appears', bestNonZeroCount, 'times out of', allSpacings.length);
       return bestNonZeroSpacing;
     }
   }
   
-  console.log('detectSpacing - No consistent spacing found');
   return null;
 }
 
@@ -337,6 +423,18 @@ function handleCreateSection() {
     detectedLayout: detectedLayout,
     detectedAlignment: detectedAlignment
   });
+  
+  // Load presets and send to UI
+  loadPresetsForUI();
+}
+
+async function loadPresetsForUI() {
+  try {
+    const presets = await getPresets();
+    figma.ui.postMessage({ type: 'presets-list', presets });
+  } catch (e) {
+    console.warn('Error loading presets for UI:', e);
+  }
 }
 
 function handleUpdateSection() {
@@ -398,8 +496,6 @@ function handleUpdateSection() {
       detectedLayout = storedSettings.layout;
       detectedAlignment = storedSettings.alignment;
       useStoredSettings = true;
-      
-      console.log('Update - Using stored settings:', storedSettings);
     } catch (e) {
       console.warn('Update - Error parsing stored settings, falling back to detection:', e);
       // Parse failed, will use detection logic below
@@ -428,11 +524,6 @@ function handleUpdateSection() {
       } as PositionedNode;
     });
     
-    // Log frame positions for debugging
-    console.log('Update - Frame count:', frames.length);
-    console.log('Update - Section position:', sectionX, sectionY);
-    console.log('Update - Relative frame positions:', frames.map(f => ({ x: f.x, y: f.y, w: f.width, h: f.height })));
-    console.log('Update - Absolute frame positions:', absoluteFrames.map(f => ({ x: f.x, y: f.y, w: f.width, h: f.height })));
     
     // Use the same detectSpacing function as createSection
     const detectedSpacing = detectSpacing(absoluteFrames);
@@ -442,9 +533,6 @@ function handleUpdateSection() {
     detectedLayout = layoutAndAlignment.layout;
     detectedAlignment = layoutAndAlignment.alignment;
     
-    // Log for debugging
-    console.log('Update - Detected spacing:', detectedSpacing);
-    console.log('Update - Detected layout:', detectedLayout, 'alignment:', detectedAlignment);
     
     // Calculate current padding from section
     // Find the minimum positions of frames relative to section
@@ -473,12 +561,6 @@ function handleUpdateSection() {
       left: Math.max(0, minFrameX)
     };
     
-    // Log padding calculation for debugging
-    console.log('Update - Padding calculation:');
-    console.log('  minFrameX:', minFrameX, 'minFrameY:', minFrameY);
-    console.log('  maxFrameX:', maxFrameX, 'maxFrameY:', maxFrameY);
-    console.log('  section.width:', section.width, 'section.height:', section.height);
-    console.log('  calculated padding:', currentPadding);
     
     // Ensure detectedSpacing is a number or null (not undefined)
     spacingValue = detectedSpacing !== null && detectedSpacing !== undefined ? detectedSpacing : null;
@@ -502,8 +584,9 @@ function handleUpdateSection() {
     detectedAlignment: detectedAlignment
   });
   
-  // Log what we're sending
-  console.log('Update - Sending to UI - detectedSpacing:', spacingValue, 'currentPadding:', roundedPadding);
+  
+  // Load presets and send to UI
+  loadPresetsForUI();
 }
 
 function findFramesInSection(section: SectionNode): PositionedNode[] {
@@ -837,7 +920,7 @@ function handleRefreshSection() {
 }
 
 // Handle messages from UI
-figma.ui.onmessage = (msg: PluginMessage) => {
+figma.ui.onmessage = async (msg: PluginMessage) => {
   if (msg.type === 'cancel') {
     figma.closePlugin();
     return;
@@ -849,6 +932,91 @@ figma.ui.onmessage = (msg: PluginMessage) => {
     } else {
       updateSection(msg);
     }
+    return;
+  }
+  
+  if (msg.type === 'save-preset') {
+    try {
+      const preset: Preset = {
+        id: `preset-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: msg.name,
+        padding: msg.padding,
+        spacing: msg.spacing,
+        layout: msg.layout,
+        alignment: msg.alignment
+      };
+      await savePreset(preset);
+      figma.ui.postMessage({ type: 'preset-saved', preset });
+      figma.notify(`Preset "${msg.name}" saved`);
+    } catch (e) {
+      figma.ui.postMessage({ type: 'preset-error', error: 'Failed to save preset' });
+      figma.notify('Failed to save preset');
+    }
+    return;
+  }
+  
+  if (msg.type === 'load-preset') {
+    try {
+      const preset = await getPreset(msg.presetId);
+      if (preset) {
+        figma.ui.postMessage({ type: 'preset-loaded', preset });
+      } else {
+        figma.ui.postMessage({ type: 'preset-error', error: 'Preset not found' });
+        figma.notify('Preset not found');
+      }
+    } catch (e) {
+      figma.ui.postMessage({ type: 'preset-error', error: 'Failed to load preset' });
+      figma.notify('Failed to load preset');
+    }
+    return;
+  }
+  
+  if (msg.type === 'delete-preset') {
+    try {
+      await deletePreset(msg.presetId);
+      figma.ui.postMessage({ type: 'preset-deleted', presetId: msg.presetId });
+      figma.notify('Preset deleted');
+    } catch (e) {
+      figma.ui.postMessage({ type: 'preset-error', error: 'Failed to delete preset' });
+      figma.notify('Failed to delete preset');
+    }
+    return;
+  }
+  
+  if (msg.type === 'update-preset') {
+    try {
+      const existingPreset = await getPreset(msg.presetId);
+      if (!existingPreset) {
+        figma.ui.postMessage({ type: 'preset-error', error: 'Preset not found' });
+        figma.notify('Preset not found');
+        return;
+      }
+      
+      const updatedPreset: Preset = {
+        ...existingPreset,
+        padding: msg.padding,
+        spacing: msg.spacing,
+        layout: msg.layout,
+        alignment: msg.alignment
+      };
+      await savePreset(updatedPreset);
+      figma.ui.postMessage({ type: 'preset-updated', preset: updatedPreset });
+      figma.notify(`Preset "${existingPreset.name}" updated`);
+    } catch (e) {
+      figma.ui.postMessage({ type: 'preset-error', error: 'Failed to update preset' });
+      figma.notify('Failed to update preset');
+    }
+    return;
+  }
+  
+  if (msg.type === 'list-presets') {
+    try {
+      const presets = await getPresets();
+      figma.ui.postMessage({ type: 'presets-list', presets });
+    } catch (e) {
+      figma.ui.postMessage({ type: 'preset-error', error: 'Failed to load presets' });
+    }
+    return;
   }
 };
 
@@ -938,11 +1106,6 @@ function createSection(msg: ApplyMessage) {
     section.appendChild(frame);
   }
   
-  // Log results
-  console.log('Create - Section position:', section.x, section.y);
-  console.log('Create - Expected size:', expectedWidth, expectedHeight);
-  console.log('Create - Section reported size:', section.width, section.height);
-  console.log('Create - Section children count:', section.children.length);
   
   // Store settings in plugin data for refresh functionality
   // Settings are stored per-section (each section has its own settings, not file-wide)
@@ -954,9 +1117,8 @@ function createSection(msg: ApplyMessage) {
   });
   section.setPluginData('autosection-settings', settingsData);
   
-  // Select the section and zoom to it
+  // Select the section (don't zoom to preserve current view)
   figma.currentPage.selection = [section];
-  figma.viewport.scrollAndZoomIntoView([section]);
   
   figma.notify(`Section created with ${frames.length} frame(s)`);
   figma.closePlugin();
@@ -1091,11 +1253,6 @@ function updateSection(msg: ApplyMessage) {
     }
   }
   
-  // Log results
-  console.log('Update - Section position:', section.x, section.y);
-  console.log('Update - Expected size:', expectedWidth, expectedHeight);
-  console.log('Update - Section reported size:', section.width, section.height);
-  console.log('Update - Section children count:', section.children.length);
   
   // Store settings in plugin data for refresh functionality
   // Settings are stored per-section (each section has its own settings, not file-wide)
@@ -1107,35 +1264,13 @@ function updateSection(msg: ApplyMessage) {
   });
   section.setPluginData('autosection-settings', settingsData);
   
-  // Restore original selection if it was stored, otherwise select the section
-  if (originalSelectionToRestore && originalSelectionToRestore.length > 0) {
-    // Check if the original selection nodes still exist (they might have been moved/removed)
-    const validOriginalSelection = originalSelectionToRestore.filter(node => {
-      try {
-        // Check if node is still in the document by accessing a property
-        const _ = node.id;
-        return true;
-      } catch {
-        return false;
-      }
-    });
-    
-    if (validOriginalSelection.length > 0) {
-      figma.currentPage.selection = validOriginalSelection;
-    } else {
-      // If original selection is no longer valid, select the section
-      figma.currentPage.selection = [section];
-    }
-    
-    // Clear the stored selection
+  // Don't change the selection to avoid triggering Figma's auto-zoom behavior
+  // The section is already selected (we validated this at the start of the function)
+  // so we'll leave the selection as-is to preserve the current viewport
+  if (originalSelectionToRestore) {
+    // Clear the stored selection but don't restore it to avoid zoom
     originalSelectionToRestore = null;
-  } else {
-    // Select the section (don't zoom to preserve current view)
-    figma.currentPage.selection = [section];
   }
-  
-  // Don't zoom - preserve current zoom and position
-  // figma.viewport.scrollAndZoomIntoView([section]);
   
   figma.notify(`Section updated with ${frames.length} frame(s)`);
   figma.closePlugin();

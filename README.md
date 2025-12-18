@@ -1,40 +1,165 @@
-Below are the steps to get your plugin running. You can also find instructions at:
+# AutoSection
 
-  https://www.figma.com/plugin-docs/plugin-quickstart-guide/
+> Automatically create and manage Figma Sections with consistent padding, spacing, and layout.
 
-This plugin template uses Typescript and NPM, two standard tools in creating JavaScript applications.
+![AutoSection Cover](<!-- TODO: Add cover image path -->)
 
-First, download Node.js which comes with NPM. This will allow you to install TypeScript and other
-libraries. You can find the download link here:
+**By [Rodrigo Soares](https://github.com/rsoares)**, creator of [Rename It](https://www.figma.com/community/plugin/731271836271143349/rename-it) — one of the most popular Figma plugins.
 
-  https://nodejs.org/en/download/
+---
 
-Next, install TypeScript using the command:
+## Features
 
-  npm install -g typescript
+- **Create Section** — Select frames and instantly wrap them in a Section with customizable padding and spacing
+- **Update Section** — Modify an existing Section's padding, spacing, layout, and alignment
+- **Refresh Section** — Quickly re-apply stored settings to a Section (no UI needed)
+- **Update All Sections** — Batch update all Sections on the current page that were created with AutoSection
+- **Presets** — Save your favorite configurations and apply them with one click
+- **Smart Detection** — Automatically detects spacing and layout direction from your selection
+- **Dark Mode Support** — UI adapts to Figma's light and dark themes
 
-Finally, in the directory of your plugin, get the latest type definitions for the plugin API by running:
+---
 
-  npm install --save-dev @figma/plugin-typings
+## Installation
 
-If you are familiar with JavaScript, TypeScript will look very familiar. In fact, valid JavaScript code
-is already valid Typescript code.
+### From Figma Community
 
-TypeScript adds type annotations to variables. This allows code editors such as Visual Studio Code
-to provide information about the Figma API while you are writing code, as well as help catch bugs
-you previously didn't notice.
+1. Visit the [AutoSection plugin page](<!-- TODO: Add Figma Community URL -->)
+2. Click **"Try it out"** or **"Save"**
+3. Access it from **Plugins → AutoSection** in any Figma file
 
-For more information, visit https://www.typescriptlang.org/
+### For Development
 
-Using TypeScript requires a compiler to convert TypeScript (code.ts) into JavaScript (code.js)
-for the browser to run.
+See the [Development](#development) section below.
 
-We recommend writing TypeScript code using Visual Studio code:
+---
 
-1. Download Visual Studio Code if you haven't already: https://code.visualstudio.com/.
-2. Open this directory in Visual Studio Code.
-3. Compile TypeScript to JavaScript: Run the "Terminal > Run Build Task..." menu item,
-    then select "npm: watch". You will have to do this again every time
-    you reopen Visual Studio Code.
+## Usage
 
-That's it! Visual Studio Code will regenerate the JavaScript file every time you save.
+### Create Section
+
+1. Select one or more frames in your Figma canvas
+2. Run **Plugins → AutoSection → Create Section**
+3. Configure your settings:
+   - **Preset** — Choose a saved preset or use Default
+   - **Layout Direction** — Horizontal, Vertical, or Maintain positions
+   - **Section Padding** — Horizontal and vertical padding values
+   - **Items Gap** — Spacing between frames
+   - **Alignment** — Align frames within the Section
+4. Click **Apply**
+
+![Create Section UI](<!-- TODO: Add screenshot path -->)
+
+### Update Section
+
+1. Select a Section (or any element inside a Section)
+2. Run **Plugins → AutoSection → Update Section**
+3. Modify the settings as needed
+4. Click **Apply**
+
+The plugin remembers each Section's settings, so your values are preserved when you update.
+
+### Refresh Section
+
+1. Select a Section that was created/updated with AutoSection
+2. Run **Plugins → AutoSection → Refresh Section**
+
+This instantly re-applies the stored settings without showing the UI — perfect for keyboard shortcuts!
+
+### Update All Sections
+
+1. Run **Plugins → AutoSection → Update All Sections**
+
+This updates every Section on the current page that has stored AutoSection settings.
+
+---
+
+## Presets
+
+Save your commonly used configurations as presets for quick access.
+
+![Presets Dropdown](<!-- TODO: Add screenshot path -->)
+
+### Managing Presets
+
+- **Save a Preset** — Click the **+** button or select "Save As New Preset..." from the dropdown
+- **Apply a Preset** — Select it from the dropdown; settings are applied immediately
+- **Update a Preset** — With a preset selected, choose "Update [preset name]" from the dropdown
+- **Delete a Preset** — Hover over a preset in the dropdown and click the trash icon
+
+The **Default** preset cannot be deleted and provides standard values (80px padding, 0 gap, horizontal layout).
+
+---
+
+## Screenshots
+
+### Plugin Interface
+
+![Plugin UI](<!-- TODO: Add UI screenshot -->)
+
+### Before & After
+
+| Before | After |
+|--------|-------|
+| ![Before](<!-- TODO: Add before screenshot -->) | ![After](<!-- TODO: Add after screenshot -->) |
+
+---
+
+## Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [TypeScript](https://www.typescriptlang.org/)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/rsoares/autosection.git
+cd autosection
+
+# Install dependencies
+npm install
+
+# Watch for changes (compiles TypeScript)
+npm run watch
+```
+
+### Loading in Figma
+
+1. Open Figma Desktop
+2. Go to **Plugins → Development → Import plugin from manifest...**
+3. Select the `manifest.json` file from this project
+4. The plugin will appear under **Plugins → Development → AutoSection**
+
+### Project Structure
+
+```
+AutoSection/
+├── code.ts          # Main plugin logic
+├── ui.html          # Plugin UI (HTML/CSS/JS)
+├── manifest.json    # Figma plugin manifest
+├── package.json     # Node.js dependencies
+├── tsconfig.json    # TypeScript configuration
+└── Assets/          # SVG icons used in the UI
+```
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+## Author
+
+**Rodrigo Soares**
+
+- [Rename It](https://www.figma.com/community/plugin/731271836271143349/rename-it) — Batch rename layers with ease
+- [GitHub](https://github.com/rsoares)
+
+---
+
+Made with ❤️ for the Figma community
