@@ -4,7 +4,7 @@
 
 ![AutoSection Cover](<!-- TODO: Add cover image path -->)
 
-**By [Rodrigo Soares](https://github.com/rsoares)**, creator of [Rename It](https://www.figma.com/community/plugin/731271836271143349/rename-it) — one of the most popular Figma plugins.
+**By [Rodrigo Soares](https://github.com/rodi01)**, creator of [Rename It](https://www.figma.com/community/plugin/731271836271143349/rename-it) — one of the most popular Figma plugins.
 
 ---
 
@@ -116,8 +116,8 @@ The **Default** preset cannot be deleted and provides standard values (80px padd
 
 ```bash
 # Clone the repository
-git clone https://github.com/rsoares/autosection.git
-cd autosection
+git clone https://github.com/rodi01/AutoSection-Figma.git
+cd AutoSection-Figma
 
 # Install dependencies
 npm install
@@ -158,7 +158,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 **Rodrigo Soares**
 
 - [Rename It](https://www.figma.com/community/plugin/731271836271143349/rename-it) — Batch rename layers with ease
-- [GitHub](https://github.com/rsoares)
+- [GitHub](https://github.com/rodi01)
 
 ---
 
